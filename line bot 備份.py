@@ -34,7 +34,7 @@ configuration = Configuration(access_token=os.getenv('CHANNEL_ACCESS_TOKEN'))
 Line_handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
 # ✅ 設定你的公開網址（例如 ngrok 或正式網域）
-BASE_URL = "https://58b2459cecc7.ngrok-free.app"  # 例如 https://abc123.ngrok.io
+BASE_URL = "https://line-bot-six-steel.vercel.app/"  # 例如 https://abc123.ngrok.io
 
 @app.route("/callback", methods=['POST'])
 def callback():
