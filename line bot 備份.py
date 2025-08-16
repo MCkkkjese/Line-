@@ -1,5 +1,5 @@
 from flask import Flask, request, abort
-import traceback   # ✅ 保留，以防除錯時有用
+import traceback   
 import json
 
 from linebot.v3 import WebhookHandler
@@ -9,16 +9,16 @@ from linebot.v3.messaging import (
     ApiClient,
     MessagingApi,
     ReplyMessageRequest,
-    PushMessageRequest,        # ✅ 主動推播訊息
-    MulticastRequest,          # ✅ 群發訊息
+    PushMessageRequest,        
+    MulticastRequest,          
     TextMessage,
-    ImageMessage,              # ✅ 圖片訊息
-    AudioMessage,              # ✅ 音訊訊息
-    VideoMessage,              # ✅ 影片訊息
-    TemplateMessage,           # ✅ 樣板訊息（新增）
-    ButtonsTemplate,           # ✅ 按鈕樣板（新增）
-    MessageAction,             # ✅ 按鈕選項（新增）
-    FlexMessage                # ✅ 新增 Flex 訊息
+    ImageMessage,         
+    AudioMessage,           
+    VideoMessage,             
+    TemplateMessage,        
+    ButtonsTemplate,           
+    MessageAction,           
+    FlexMessage                
 )
 from linebot.v3.webhooks import (
     MessageEvent,
@@ -29,12 +29,11 @@ app = Flask(__name__)
 
 import os
 
-# ✅ 你的 Channel Access Token（請妥善保管）
 configuration = Configuration(access_token=os.getenv('CHANNEL_ACCESS_TOKEN'))
 Line_handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
-# ✅ 設定你的公開網址（例如 ngrok 或正式網域）
-BASE_URL = "https://line-bot-six-steel.vercel.app/"  # 例如 https://abc123.ngrok.io
+
+BASE_URL = "https://line-bot-six-steel.vercel.app/"  
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -48,7 +47,6 @@ def callback():
         app.logger.info("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
     except Exception as e:
-        # ✅ 額外補上錯誤印出，方便除錯
         app.logger.error("Webhook Error:", e)
         traceback.print_exc()
         abort(500)
@@ -62,9 +60,6 @@ def handle_message(event):
         user_id = event.source.user_id
         user_text = event.message.text
 
-        # =============================
-        # ✅ 新增「選單功能」邏輯
-        # =============================
         if user_text == "選單":
             line_bot_api.reply_message_with_http_info(
                 ReplyMessageRequest(
@@ -88,11 +83,7 @@ def handle_message(event):
             )
             return  
 
-        # =============================
-        # ✅ 新增「Flex 功能」
-        # 使用者輸入 NTUE → 回覆 Flex 卡片
-        # =============================
-        if user_text == "NTUE":
+        if user_text == "認識國北教":
             flex_json = {
               "type": "bubble",
               "hero": {
@@ -183,9 +174,7 @@ def handle_message(event):
             )
             return  
 
-        # =============================
-        # ✅ 原本 B 程式的 Echo 功能
-        # =============================
+        
         line_bot_api.reply_message_with_http_info(
             ReplyMessageRequest(
                 reply_token=event.reply_token,
@@ -193,11 +182,8 @@ def handle_message(event):
             )
         )
 
-        # =============================
-        # ✅ 原本 B 程式的「多次推播」設計
-        # =============================
-
-        # 推播純文字
+        
+        
         line_bot_api.push_message_with_http_info(
             PushMessageRequest(
                 to=user_id,
@@ -205,7 +191,7 @@ def handle_message(event):
             )
         )
 
-        # 推播圖片
+        
         line_bot_api.push_message_with_http_info(
             PushMessageRequest(
                 to=user_id,
@@ -218,7 +204,7 @@ def handle_message(event):
             )
         )
 
-        # 推播音訊
+        
         line_bot_api.push_message_with_http_info(
             PushMessageRequest(
                 to=user_id,
@@ -231,7 +217,7 @@ def handle_message(event):
             )
         )
 
-        # 推播影片
+        
         line_bot_api.push_message_with_http_info(
             PushMessageRequest(
                 to=user_id,
@@ -244,7 +230,7 @@ def handle_message(event):
             )
         )
 
-        # 群發訊息
+        
         user_ids = [user_id, '@895ibvph']  # 第二個 ID 請換成你的其他帳號
         line_bot_api.multicast_with_http_info(
             MulticastRequest(
